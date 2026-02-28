@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The First Key — Frame Your First Drive</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --gold-dark: #9a7a2e;
+    --cream: #f5f0e8;
+    --gray: #888;
+    --white: #ffffff;
+    --section-gap: 100px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--cream);
+    font-family: 'Montserrat', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.1s ease;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 32px; height: 32px;
+    border: 1px solid rgba(201,168,76,0.4);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    z-index: 9998;
+    transition: all 0.15s ease;
+    transform: translate(-50%, -50%);
+  }
+
+  /* NOISE TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+    backdrop-filter: blur(10px);
+  }
+
+  .nav-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: rgba(245,240,232,0.6);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 0 20px;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 60%, rgba(201,168,76,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 20% 20%, rgba(201,168,76,0.04) 0%, transparent 60%);
+  }
+
+  /* road lines animation */
+  .road-lines {
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 40%;
+    background: linear-gradient(to bottom, rgba(201,168,76,0.3), transparent);
+  }
+
+  .road-lines::before, .road-lines::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(201,168,76,0.15), transparent);
+    animation: roadMove 3s linear infinite;
+  }
+
+  .road-lines::before { left: -40px; animation-delay: 0s; }
+  .road-lines::after  { left: 40px;  animation-delay: 1.5s; }
+
+  @keyframes roadMove {
+    0%   { transform: translateY(-100%); opacity: 0; }
+    20%  { opacity: 1; }
+    80%  { opacity: 1; }
+    100% { transform: translateY(100%); opacity: 0; }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 800px;
+  }
+
+  .hero-eyebrow {
+    font-size: 9px;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 10vw, 100px);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -1px;
+    color: var(--cream);
+    margin-bottom: 8px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  .hero-title .gold { color: var(--gold); font-style: italic; }
+
+  .hero-title-2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 10vw, 100px);
+    font-weight: 300;
+    line-height: 0.95;
+    letter-spacing: -1px;
+    color: var(--cream);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.7s forwards;
+  }
+
+  .hero-sub {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: rgba(245,240,232,0.5);
+    line-height: 2;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.9s forwards;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 40px;
+    background: transparent;
+    border: 1px solid var(--gold-dark);
+    color: var(--gold);
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.1s forwards;
+  }
+
+  .hero-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+    z-index: -1;
+  }
+
+  .hero-cta:hover { color: var(--black); }
+  .hero-cta:hover::before { transform: translateX(0); }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.5s forwards;
+  }
+
+  .scroll-hint span {
+    font-size: 7px;
+    letter-spacing: 4px;
+    color: rgba(201,168,76,0.4);
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold-dark), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* GOLD DIVIDER */
+  .gold-divider {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    max-width: 200px;
+    margin: 0 auto;
+  }
+  .gold-divider .line { flex: 1; height: 1px; background: var(--gold-dark); }
+  .gold-divider .diamond {
+    width: 6px; height: 6px;
+    background: var(--gold);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  /* SECTIONS */
+  section {
+    padding: var(--section-gap) 20px;
+    position: relative;
+  }
+
+  .section-eyebrow {
+    font-size: 8px;
+    letter-spacing: 5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 6vw, 60px);
+    font-weight: 300;
+    text-align: center;
+    color: var(--cream);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+
+  .section-title .gold { color: var(--gold); font-style: italic; }
+
+  .section-sub {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--gray);
+    text-align: center;
+    line-height: 1.9;
+    max-width: 500px;
+    margin: 0 auto 60px;
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .about-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(201,168,76,0.1);
+    padding: 40px 36px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .about-card:hover {
+    background: rgba(201,168,76,0.04);
+    border-color: rgba(201,168,76,0.3);
+  }
+
+  .about-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 0;
+    background: var(--gold);
+    transition: height 0.4s ease;
+  }
+
+  .about-card:hover::before { height: 100%; }
+
+  .about-icon { font-size: 28px; margin-bottom: 16px; }
+
+  .about-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .about-card p {
+    font-size: 11px;
+    color: var(--gray);
+    line-height: 1.9;
+    letter-spacing: 0.3px;
+  }
+
+  /* GALLERY */
+  .gallery-section {
+    background: linear-gradient(180deg, var(--black), #0f0f0f, var(--black));
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 3px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .gallery-item {
+    background: #111;
+    overflow: hidden;
+    position: relative;
+    cursor: none;
+  }
+
+  .gallery-item:first-child {
+    grid-row: 1 / 3;
+  }
+
+  .gallery-mock {
+    width: 100%;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: linear-gradient(145deg, #141414, #0e0e0e);
+    border: 1px solid rgba(201,168,76,0.08);
+    transition: border-color 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gallery-item:first-child .gallery-mock {
+    aspect-ratio: unset;
+    height: 100%;
+    min-height: 400px;
+  }
+
+  .gallery-item:hover .gallery-mock {
+    border-color: rgba(201,168,76,0.25);
+  }
+
+  .gallery-mock::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(201,168,76,0.05), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .gallery-item:hover .gallery-mock::after { opacity: 1; }
+
+  .frame-preview {
+    width: 85%;
+    max-width: 200px;
+    aspect-ratio: 12/18;
+    background: linear-gradient(145deg, #2a2010, #1a1508);
+    border: 6px solid #3d2e1a;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    position: relative;
+  }
+
+  .fp-top {
+    background: linear-gradient(180deg, #f0ede6, #e5e0d8);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    gap: 4px;
+  }
+
+  .fp-top-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 7px;
+    font-weight: 700;
+    color: #111;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+
+  .fp-car-emoji { font-size: 24px; }
+
+  .fp-details-text {
+    font-size: 4.5px;
+    color: #666;
+    letter-spacing: 0.3px;
+    text-align: center;
+    line-height: 1.6;
+  }
+
+  .fp-bottom {
+    background: #111;
+    flex: 0.8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .fp-family {
+    font-size: 16px;
+  }
+
+  .fp-tagline-mini {
+    font-size: 4px;
+    color: #666;
+    font-style: italic;
+    position: absolute;
+    bottom: 4px;
+    left: 0; right: 0;
+    text-align: center;
+  }
+
+  .gallery-label {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: rgba(201,168,76,0.5);
+    text-transform: uppercase;
+  }
+
+  /* PRICING */
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .price-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(201,168,76,0.1);
+    padding: 40px 28px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .price-card.featured {
+    background: rgba(201,168,76,0.05);
+    border-color: var(--gold-dark);
+  }
+
+  .price-card.featured::before {
+    content: 'MOST POPULAR';
+    position: absolute;
+    top: -1px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: var(--black);
+    font-size: 7px;
+    letter-spacing: 3px;
+    padding: 4px 16px;
+    font-weight: 600;
+  }
+
+  .price-card:hover {
+    background: rgba(201,168,76,0.07);
+    border-color: rgba(201,168,76,0.4);
+    transform: translateY(-4px);
+  }
+
+  .price-name {
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .price-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 52px;
+    font-weight: 300;
+    color: var(--cream);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .price-amount sup {
+    font-size: 20px;
+    vertical-align: super;
+    color: var(--gold);
+  }
+
+  .price-desc {
+    font-size: 9px;
+    color: var(--gray);
+    letter-spacing: 1px;
+    margin-bottom: 28px;
+  }
+
+  .price-features {
+    list-style: none;
+    margin-bottom: 32px;
+  }
+
+  .price-features li {
+    font-size: 10px;
+    color: rgba(245,240,232,0.7);
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    letter-spacing: 0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .price-features li::before {
+    content: '✦';
+    color: var(--gold-dark);
+    font-size: 8px;
+    flex-shrink: 0;
+  }
+
+  .price-btn {
+    display: block;
+    padding: 12px 24px;
+    border: 1px solid var(--gold-dark);
+    color: var(--gold);
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.3s;
+    background: transparent;
+    cursor: none;
+    width: 100%;
+  }
+
+  .price-btn:hover, .price-card.featured .price-btn {
+    background: var(--gold);
+    color: var(--black);
+    border-color: var(--gold);
+  }
+
+  /* HOW TO ORDER */
+  .order-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .order-steps::before {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--gold-dark), var(--gold-dark), transparent);
+  }
+
+  .order-step {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+    padding: 32px 0;
+    position: relative;
+  }
+
+  .step-circle {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--black);
+    border: 1.5px solid var(--gold-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s;
+  }
+
+  .order-step:hover .step-circle {
+    background: rgba(201,168,76,0.1);
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(201,168,76,0.15);
+  }
+
+  .step-content { padding-top: 8px; }
+
+  .step-num-label {
+    font-size: 8px;
+    letter-spacing: 3px;
+    color: var(--gold-dark);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .step-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .step-desc {
+    font-size: 11px;
+    color: var(--gray);
+    line-height: 1.8;
+    letter-spacing: 0.3px;
+  }
+
+  /* REVIEWS */
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .review-card {
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(201,168,76,0.08);
+    padding: 32px 28px;
+    position: relative;
+    transition: all 0.3s;
+  }
+
+  .review-card:hover {
+    background: rgba(201,168,76,0.04);
+    border-color: rgba(201,168,76,0.2);
+  }
+
+  .review-stars {
+    color: var(--gold);
+    font-size: 12px;
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+  }
+
+  .review-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    font-style: italic;
+    color: rgba(245,240,232,0.8);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .review-divider {
+    width: 30px;
+    height: 1px;
+    background: var(--gold-dark);
+    margin-bottom: 16px;
+  }
+
+  .reviewer-name {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--cream);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .reviewer-car {
+    font-size: 9px;
+    color: var(--gold-dark);
+    letter-spacing: 1px;
+  }
+
+  .quote-mark {
+    position: absolute;
+    top: 20px; right: 24px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 60px;
+    color: rgba(201,168,76,0.06);
+    line-height: 1;
+  }
+
+  /* WHATSAPP CTA */
+  .cta-section {
+    text-align: center;
+    padding: 100px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(201,168,76,0.06), transparent);
+  }
+
+  .cta-section::after {
+    content: '🔑';
+    position: absolute;
+    font-size: 300px;
+    opacity: 0.015;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .whatsapp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 48px;
+    background: #25D366;
+    color: white;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+    position: relative;
+    z-index: 2;
+    margin-top: 40px;
+  }
+
+  .whatsapp-btn:hover {
+    background: #128C7E;
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(37,211,102,0.2);
+  }
+
+  .whatsapp-icon { font-size: 20px; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid rgba(201,168,76,0.1);
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .footer-tagline {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .footer-links a {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--gray);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover { color: var(--gold); }
+
+  .footer-copy {
+    font-size: 8px;
+    color: rgba(136,136,136,0.4);
+    letter-spacing: 2px;
+  }
+
+  /* SCROLL REVEAL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* MOBILE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .about-grid { grid-template-columns: 1fr; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; }
+    .gallery-item:first-child { grid-column: 1 / 3; grid-row: auto; }
+    .gallery-item:first-child .gallery-mock { min-height: 300px; }
+    .pricing-grid { grid-template-columns: 1fr; max-width: 360px; }
+    .reviews-grid { grid-template-columns: 1fr; max-width: 400px; }
+    body { cursor: auto; }
+    .cursor, .cursor-ring { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">🔑 The First Key</div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#order">Order</a></li>
+    <li><a href="#reviews">Reviews</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="road-lines"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">✦ India's First Personalized Car Delivery Frame ✦</div>
+    <div class="hero-title">Frame Your</div>
+    <div class="hero-title-2"><span class="gold">First Drive.</span></div>
+    <div class="hero-sub">
+      Aapki nai gaadi. Aapka pehla key moment.<br>
+      Ab hamesha ke liye framed — exactly jaise tha woh din.
+    </div>
+    <a href="#order" class="hero-cta">
+      Order Karo ✦ ₹1,999 se shuru
+    </a>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-eyebrow">✦ Hum Kya Karte Hain</div>
+  <h2 class="section-title">Sirf ek frame nahi —<br>ek <span class="gold">memory</span> hai.</h2>
+  <p class="section-sub">Aapki car delivery ka woh special moment — family ki photo, aapki exact gaadi ka diecast model, aur aapka naam — sab ek premium frame mein forever.</p>
+
+  <div class="about-grid reveal">
+    <div class="about-card">
+      <div class="about-icon">🚗</div>
+      <h3>Aapki Exact Gaadi</h3>
+      <p>Tata, Maruti, Hyundai, Mahindra — aapki gaadi ka diecast model frame ke saath milta hai. Same color, same model — bilkul aapki jaisi.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-icon">📸</div>
+      <h3>Delivery Wali Photo</h3>
+      <p>Dealer se chaabi milte waqt ki family photo — woh ek second jo hamesha yaad rahega — poster pe print hokar frame mein laga dete hain.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-icon">✍️</div>
+      <h3>Aapka Naam & Date</h3>
+      <p>"Sharma Family's First Car — 14 Feb 2025" — ek personalized message jo sirf aapke liye hoga. Duniya mein ek hi piece.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-icon">📦</div>
+      <h3>Premium Packaging</h3>
+      <p>Matte black box, gold foil branding, foam tray — unboxing ka experience bhi utna hi khaas hoga jitna product khud.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="gallery-section">
+  <div class="section-eyebrow">✦ Our Work</div>
+  <h2 class="section-title">Every frame tells a<br><span class="gold">story.</span></h2>
+  <p class="section-sub">Har gaadi alag hai. Har family alag hai. Isliye har frame bhi unique hota hai.</p>
+
+  <div class="gallery-grid reveal">
+    <div class="gallery-item">
+      <div class="gallery-mock">
+        <div class="frame-preview">
+          <div class="fp-top">
+            <div class="fp-top-title">TIMELESS MILESTONE</div>
+            <div class="fp-car-emoji">🚗</div>
+            <div class="fp-details-text">MODEL: CRETA N LINE<br>CHASSIS: MSD8849757153<br>0-100: MEMORIES IN SECONDS.</div>
+            <div style="width:90%;height:50px;background:rgba(0,0,0,0.08);border-radius:1px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-top:4px;">👨‍👩‍👧‍👦</div>
+          </div>
+          <div class="fp-bottom">
+            <div style="text-align:center;">
+              <div style="font-size:5px;color:#aaa;font-style:italic;">Sharma Family's First Car</div>
+              <div style="font-size:4px;color:#666;margin-top:2px;">Your first love, now framed forever.</div>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-label">Hyundai Creta</div>
+      </div>
+    </div>
+
+    <div class="gallery-item">
+      <div class="gallery-mock" style="background:linear-gradient(145deg,#100a0a,#0e0a0a);">
+        <div class="frame-preview" style="max-width:130px;">
+          <div class="fp-top" style="background:linear-gradient(180deg,#eef2f0,#e4eae7);">
+            <div class="fp-top-title">TIMELESS MILESTONE</div>
+            <div class="fp-car-emoji">🚙</div>
+            <div class="fp-details-text">MODEL: TATA PUNCH<br>0-100: MEMORIES IN SECONDS.</div>
+            <div style="width:90%;height:35px;background:rgba(0,0,0,0.06);border-radius:1px;display:flex;align-items:center;justify-content:center;font-size:10px;">👨‍👩‍👦</div>
+          </div>
+          <div class="fp-bottom">
+            <div style="font-size:4px;color:#aaa;font-style:italic;">Patel Family</div>
+          </div>
+        </div>
+        <div class="gallery-label">Tata Punch</div>
+      </div>
+    </div>
+
+    <div class="gallery-item">
+      <div class="gallery-mock" style="background:linear-gradient(145deg,#0a0a10,#080810);">
+        <div class="frame-preview" style="max-width:130px;">
+          <div class="fp-top" style="background:linear-gradient(180deg,#f0ede6,#e8e4dc);">
+            <div class="fp-top-title">TIMELESS MILESTONE</div>
+            <div class="fp-car-emoji">🏎️</div>
+            <div class="fp-details-text">MODEL: MARUTI FRONX<br>0-100: MEMORIES IN SECONDS.</div>
+            <div style="width:90%;height:35px;background:rgba(0,0,0,0.06);border-radius:1px;display:flex;align-items:center;justify-content:center;font-size:10px;">👨‍👩‍👧</div>
+          </div>
+          <div class="fp-bottom">
+            <div style="font-size:4px;color:#aaa;font-style:italic;">Verma Family</div>
+          </div>
+        </div>
+        <div class="gallery-label">Maruti Fronx</div>
+      </div>
+    </div>
+
+    <div class="gallery-item">
+      <div class="gallery-mock" style="background:linear-gradient(145deg,#0a0f0a,#080e08);">
+        <div style="text-align:center;padding:20px;">
+          <div style="font-size:40px;margin-bottom:12px;">📦</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:16px;color:var(--gold);letter-spacing:2px;margin-bottom:6px;">Premium Box</div>
+          <div style="font-size:9px;color:var(--gray);letter-spacing:1px;line-height:1.8;">Matte Black<br>Gold Foil Print<br>Foam Tray Inside</div>
+        </div>
+        <div class="gallery-label">Packaging</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-eyebrow">✦ Pricing</div>
+  <h2 class="section-title">Choose your<br><span class="gold">milestone.</span></h2>
+  <p class="section-sub">Har package mein aapki gaadi, aapki photo, aur aapka naam — sirf detail ka fark hai.</p>
+
+  <div class="pricing-grid reveal">
+    <div class="price-card">
+      <div class="price-name">Standard</div>
+      <div class="price-amount"><sup>₹</sup>1,999</div>
+      <div class="price-desc">Perfect start</div>
+      <ul class="price-features">
+        <li>12×18" Wooden Frame</li>
+        <li>Diecast Car Model</li>
+        <li>Custom Poster Design</li>
+        <li>Family Name + Date</li>
+        <li>Premium Packaging</li>
+      </ul>
+      <a href="#order" class="price-btn">Order Now</a>
+    </div>
+
+    <div class="price-card featured">
+      <div class="price-name">Premium</div>
+      <div class="price-amount"><sup>₹</sup>2,499</div>
+      <div class="price-desc">Most loved</div>
+      <ul class="price-features">
+        <li>12×18" Wooden Frame</li>
+        <li>Diecast Car — Exact Color</li>
+        <li>Delivery Photo on Poster</li>
+        <li>Family Name + Date + Message</li>
+        <li>Luxury Black Box</li>
+      </ul>
+      <a href="#order" class="price-btn">Order Now</a>
+    </div>
+
+    <div class="price-card">
+      <div class="price-name">Signature</div>
+      <div class="price-amount"><sup>₹</sup>2,999</div>
+      <div class="price-desc">Truly one of a kind</div>
+      <ul class="price-features">
+        <li>12×18" Premium Frame</li>
+        <li>Custom Color Diecast Car</li>
+        <li>2 Photos on Poster</li>
+        <li>Chassis Number Engraved</li>
+        <li>Gold Foil Box + Key Charm</li>
+      </ul>
+      <a href="#order" class="price-btn">Order Now</a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO ORDER -->
+<section id="order" style="background:linear-gradient(180deg,var(--black),#0d0d0d,var(--black));">
+  <div class="section-eyebrow">✦ Order Karo</div>
+  <h2 class="section-title">4 simple steps to<br><span class="gold">forever.</span></h2>
+  <p class="section-sub">WhatsApp pe message karo — baki sab hum sambhal lete hain.</p>
+
+  <div class="order-steps reveal">
+    <div class="order-step">
+      <div class="step-circle">📱</div>
+      <div class="step-content">
+        <div class="step-num-label">Step 01</div>
+        <div class="step-title">WhatsApp Karo</div>
+        <div class="step-desc">Humein WhatsApp pe message karo. Car model, color, aur package batao. Hum turant reply karenge.</div>
+      </div>
+    </div>
+
+    <div class="order-step">
+      <div class="step-circle">📸</div>
+      <div class="step-content">
+        <div class="step-num-label">Step 02</div>
+        <div class="step-title">Photo & Details Bhejo</div>
+        <div class="step-desc">Delivery wali family photo bhejo. Saath mein family naam, date, aur koi special message bhi batao.</div>
+      </div>
+    </div>
+
+    <div class="order-step">
+      <div class="step-circle">🎨</div>
+      <div class="step-content">
+        <div class="step-num-label">Step 03</div>
+        <div class="step-title">Preview Approve Karo</div>
+        <div class="step-desc">Hum 24 ghante mein aapka poster design taiyar karke preview bhejenge. Approve karo — phir production shuru!</div>
+      </div>
+    </div>
+
+    <div class="order-step">
+      <div class="step-circle">📦</div>
+      <div class="step-content">
+        <div class="step-num-label">Step 04</div>
+        <div class="step-title">Doorstep Delivery</div>
+        <div class="step-desc">Premium black box mein carefully packed — 5–7 working days mein aapke ghar pe. Pan India delivery available.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="section-eyebrow">✦ Customer Reviews</div>
+  <h2 class="section-title">What our customers<br><span class="gold">say.</span></h2>
+  <p class="section-sub">Asli log, asli emotions — jab pehli chaabi ko frame milti hai.</p>
+
+  <div class="reviews-grid reveal">
+    <div class="review-card">
+      <div class="quote-mark">"</div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Mere papa ko gift kiya tha unki nai Tata Safari pe. Unki aankhein bhar aayi unboxing karte waqt. Ye sirf ek frame nahi tha — ek emotion tha."</div>
+      <div class="review-divider"></div>
+      <div class="reviewer-name">Rahul Sharma</div>
+      <div class="reviewer-car">Tata Safari — Mumbai</div>
+    </div>
+
+    <div class="review-card">
+      <div class="quote-mark">"</div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Anniversary gift ke liye perfect tha. Humari pehli shared car ka model frame mein — ekdum unique. Packaging bhi bahut premium thi."</div>
+      <div class="review-divider"></div>
+      <div class="reviewer-name">Priya & Arjun Mehta</div>
+      <div class="reviewer-car">Hyundai Creta — Ahmedabad</div>
+    </div>
+
+    <div class="review-card">
+      <div class="quote-mark">"</div>
+      <div class="review-stars">★★★★★</div>
+      <div class="review-text">"Office mein sab ne pucha kahan se liya! Itna unique gift pehle kabhi nahi diya tha. The First Key ne sach mein ek memory frame kar di."</div>
+      <div class="review-divider"></div>
+      <div class="reviewer-name">Vikash Patel</div>
+      <div class="reviewer-car">Maruti Fronx — Surat</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-eyebrow reveal">✦ Ready to Frame Your Moment?</div>
+  <h2 class="section-title reveal">Aapki pehli chaabi<br><span class="gold">ab forever yours.</span></h2>
+  <p class="section-sub reveal">Sirf WhatsApp karo — aur hum aapki memory ko ek timeless piece mein badal denge.</p>
+  <a href="https://wa.me/?text=Hi%2C%20I%20want%20to%20order%20from%20The%20First%20Key!" class="whatsapp-btn reveal">
+    <span class="whatsapp-icon">💬</span>
+    Order on WhatsApp
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">The First Key</div>
+  <div class="footer-tagline">Every journey begins with one</div>
+  <div class="footer-links">
+    <a href="#about">About</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#order">Order</a>
+  </div>
+  <div class="footer-copy">© 2025 The First Key · thefirstkey.in · Made with ❤️ in India</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top  = my + 'px';
+  });
+
+  function animRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top  = ry + 'px';
+    requestAnimationFrame(animRing);
+  }
+  animRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(2)';
+      ring.style.transform   = 'translate(-50%,-50%) scale(1.5)';
+      ring.style.borderColor = 'rgba(201,168,76,0.8)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+      ring.style.transform   = 'translate(-50%,-50%) scale(1)';
+      ring.style.borderColor = 'rgba(201,168,76,0.4)';
+    });
+  });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
